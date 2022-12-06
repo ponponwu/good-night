@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :check_followee, :set_follow
+  before_action :check_followee, :set_follow, only: [:follow, :unfollow]
 
   # POST /users/:id/follow
   def follow
@@ -12,16 +12,20 @@ class UsersController < ApplicationController
 
   # POST /users/:id/unfollow
   def unfollow
+    raise ResourceNotFoundError unless @follow
     @follow.update!(status: 'removed')
     head :ok
   end
 
-  def alarms
-    @alarms = Alarm.where(user_id: params[:id])
-  end
-
+  # GET /users/:id/follower_records
+  # TODO: Add pagination
   def follower_records
-
+    followee_ids = Follow.where(follower_id: params[:id], status: 'active').map(&:followee_id)
+    end_time = DateTime.now.in_time_zone('Asia/Taipei')
+    start_time = end_time - 7.days
+  
+    alarms = Alarm.where(user_id: followee_ids, awoke_at: start_time..end_time).order(period_of_sleep: :desc)
+    render json: { status: 'ok' , data: alarms }
   end
 
   private
@@ -31,7 +35,10 @@ class UsersController < ApplicationController
   end
 
   def check_followee
-    raise ResourceNotFoundError if User.find(user_params[:followee_id]).nil?
+    @user = User.find(user_params[:followee_id].to_i)
+    raise ResourceNotFoundError if @user.nil?
+  rescue => ex
+    raise ResourceNotFoundError.new(ex)
   end
 
   def user_params
