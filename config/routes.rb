@@ -7,10 +7,11 @@ Rails.application.routes.draw do
     member do
       post :follow
       post :unfollow
-      get :alarms
       get :follower_records
     end
   end
+  
+  get 'users/:user_id/alarms' => 'alarms#index'
 
   resources :alarms, only: [:update] do
     collection do
