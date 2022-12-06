@@ -228,7 +228,7 @@ DEPENDENCIES
   bootsnap
   capybara
   debug
-  factory_bot_rails
+  factory_bot_rails (~> 6.2)
   importmap-rails
   jbuilder
   pg (~> 1.1)
