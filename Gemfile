@@ -6,7 +6,8 @@ ruby "2.7.4"
 # ADD list
 # https://github.com/tmlee/time_difference
 # for comparing time
-gem 'time_difference' 
+gem 'time_difference'
+gem 'kaminari'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.3", ">= 7.0.3.1"
