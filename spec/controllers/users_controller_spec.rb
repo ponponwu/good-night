@@ -25,7 +25,24 @@ RSpec.describe UsersController, type: :controller do
       let(:followee_id) { '#$%^&@#$%' }
 
       it 'should raise ResourceNotFoundError' do
-        expect { subject }.to raise_error(ResourceNotFoundError)
+        expect { subject }.to change { Follow.count }.by 0
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'if already followed' do
+      let!(:follow) { create(:follow, follower_id: follower_id, followee_id: followee_id) }
+      it 'should not follow again' do
+        subject
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'if follower_id as same as followee_id' do
+      let!(:followee_id) { follower_id }
+      it 'should get response 422' do
+        subject
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
@@ -34,18 +51,29 @@ RSpec.describe UsersController, type: :controller do
     subject do
       post :unfollow, params: params
     end
-    let!(:follow) { create(:follow, follower_id: follower_id, followee_id: followee_id) }
-    context 'with valid params' do
-      it 'should update follow status' do
-        subject
-        expect(follow.reload.status).to eq('removed')
+
+    context 'when follow exist' do
+      let!(:follow) { create(:follow, follower_id: follower_id, followee_id: followee_id) }
+      context 'with valid params' do
+        it 'should update follow status' do
+          subject
+          expect(follow.reload.status).to eq('removed')
+        end
+      end
+
+      context 'with invalid followee' do
+        let(:followee_id) { '#$%^&@#$%' }
+        it 'should raise ResourceNotFoundError' do
+          subject
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
       end
     end
 
-    context 'with invalid followee' do
-      let(:followee_id) { '#$%^&@#$%' }
-      it 'should raise ResourceNotFoundError' do
-        expect { subject }.to raise_error(ResourceNotFoundError)
+    context 'without existed follow' do
+      it 'should get response 422' do
+        subject
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end

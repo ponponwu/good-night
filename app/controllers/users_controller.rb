@@ -4,7 +4,6 @@ class UsersController < ApplicationController
 
   # POST /users/:id/follow
   def follow
-    ## TODO: add index for follower_id, followee_id, status
     raise 'Already Follow!' if @follow
     Follow.create!(follower_id: params[:id], followee_id: user_params[:followee_id])
     head :ok
@@ -24,7 +23,10 @@ class UsersController < ApplicationController
     end_time = Time.now
     start_time = end_time - 7.days
   
-    alarms = Alarm.where(user_id: followee_ids, awoke_at: start_time..end_time).order(period_of_sleep: :desc)
+    alarms = Alarm
+             .where(user_id: followee_ids, awoke_at: start_time..end_time)
+             .order(period_of_sleep: :desc)
+             .page(params[:page])
     render json: { status: 'ok' , data: alarms }
   end
 
@@ -35,8 +37,9 @@ class UsersController < ApplicationController
   end
 
   def check_followee
-    @user = User.find(user_params[:followee_id].to_i)
-    raise ResourceNotFoundError if @user.nil?
+    raise "You Can't Follow Yourself!" if user_params[:followee_id] == params[:id]
+    user = User.find(user_params[:followee_id].to_i)
+    raise ResourceNotFoundError if user.nil?
   end
 
   def user_params
