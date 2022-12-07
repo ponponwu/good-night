@@ -1,5 +1,5 @@
 class Alarm < ApplicationRecord
-  belongs_to :user, optional: true
+  belongs_to :user
   after_save :calculate_period_of_sleep, if: -> { awoke_at.present? && period_of_sleep.blank? }
   paginates_per 50
 
