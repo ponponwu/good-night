@@ -50,9 +50,9 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-  describe '#follower_records' do
+  describe '#followee_records' do
     subject do
-      get :follower_records, params: params, format: :json
+      get :followee_records, params: params, format: :json
     end
     before do
       create(:follow, followee_id: followee_id, follower_id: follower_id)
