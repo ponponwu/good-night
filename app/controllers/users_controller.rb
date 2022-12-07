@@ -1,12 +1,12 @@
 class UsersController < ApplicationController
+  rescue_from StandardError, with: :render_error_message
   before_action :check_followee, :set_follow, only: [:follow, :unfollow]
 
   # POST /users/:id/follow
   def follow
-    ## TODO: add unique for follower_id, followee_id, status
     ## TODO: add index for follower_id, followee_id, status
-    return if @follow
-    Follow.create(follower_id: params[:id], followee_id: user_params[:followee_id])
+    raise 'Already Follow!' if @follow
+    Follow.create!(follower_id: params[:id], followee_id: user_params[:followee_id])
     head :ok
   end
 
@@ -21,7 +21,7 @@ class UsersController < ApplicationController
   # TODO: Add pagination
   def follower_records
     followee_ids = Follow.where(follower_id: params[:id], status: 'active').map(&:followee_id)
-    end_time = DateTime.now.in_time_zone('Asia/Taipei')
+    end_time = Time.now
     start_time = end_time - 7.days
   
     alarms = Alarm.where(user_id: followee_ids, awoke_at: start_time..end_time).order(period_of_sleep: :desc)
@@ -37,13 +37,17 @@ class UsersController < ApplicationController
   def check_followee
     @user = User.find(user_params[:followee_id].to_i)
     raise ResourceNotFoundError if @user.nil?
-  rescue => ex
-    raise ResourceNotFoundError.new(ex)
   end
 
   def user_params
     params.require(:user).permit(
       :followee_id
     ).to_h
+  end
+
+  def render_error_message(ex)
+    logger.debug ex.message
+    logger.debug ex.backtrace.take(5).join("\n")
+    render json: { message: ex.message, result: false }, status: :unprocessable_entity
   end
 end
