@@ -17,9 +17,9 @@ class UsersController < ApplicationController
     head :ok
   end
 
-  # GET /users/:id/follower_records
+  # GET /users/:id/followee_records
   # TODO: Add pagination
-  def follower_records
+  def followee_records
     followee_ids = Follow.where(follower_id: params[:id], status: 'active').map(&:followee_id)
     end_time = Time.now
     start_time = end_time - 7.days
