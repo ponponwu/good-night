@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :alarm do
     user_id { create(:user).id }
-    slept_at { DateTime.now - 1.hour }
-    awoke_at { DateTime.now }
+    slept_at { Time.now - 1.hour }
+    awoke_at { Time.now }
 
     trait :last_week_alarm do
       slept_at { 2.weeks.from_now }
