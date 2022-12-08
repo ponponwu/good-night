@@ -9,7 +9,10 @@ class V1::AlarmsController < ApplicationController
   # params: :id, :slept_at, :awoke_at
   def update
     alarm = Alarm.find(params[:id])
-    alarm.update!(slept_at: alarm_params[:slept_at], awoke_at: alarm_params[:awoke_at])
+    slept_at = alarm_params[:slept_at] || alarm.slept_at
+    awoke_at = alarm_params[:awoke_at] || alarm.awoke_at
+    alarm.update!(slept_at: slept_at, awoke_at: awoke_at)
+    render json: { result: true , data: alarm }
   end
 
   def clock_in
@@ -28,6 +31,7 @@ class V1::AlarmsController < ApplicationController
     alarm = Alarm.where(user_id: alarm_params[:user_id]).last
     if alarm.awoke_at.nil?
       alarm.update!(awoke_at: awoke_at)
+      head :ok
     else
       Rails.logger.error 'You already awoke!'
       render json: { result: false }, status: :unprocessable_entity
