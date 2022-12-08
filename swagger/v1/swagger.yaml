@@ -1,0 +1,90 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/v1/users/:user_id/alarms":
+    parameters:
+    - name: user_id
+      in: path
+      description: integer
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: list alarms
+      tags:
+      - Alarms
+      responses:
+        '200':
+          description: successful
+  "/v1/alarms/clock_in":
+    parameters:
+    - name: user_id
+      in: path
+      description: '5566'
+      required: true
+      schema:
+        type: string
+    - name: alarm
+      in: body
+      schema:
+        type: object
+        properties:
+          slept_at:
+            type: string
+            format: date-time
+    post:
+      summary: clock_in
+      tags:
+      - Alarms
+      responses:
+        '200':
+          description: successful
+  "/v1/alarms/clock_out":
+    parameters:
+    - name: user_id
+      in: path
+      description: '5566'
+      required: true
+      schema:
+        type: string
+    - name: alarm
+      in: body
+      schema:
+        type: object
+        properties:
+          awoke_at:
+            type: string
+            format: date-time
+    post:
+      summary: clock_out
+      tags:
+      - Alarms
+      responses:
+        '200':
+          description: successful
+  "/v1/alarms/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    patch:
+      summary: update alarm
+      responses:
+        '200':
+          description: successful
+    put:
+      summary: update alarm
+      responses:
+        '200':
+          description: successful
+servers:
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: localhost:3000
