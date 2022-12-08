@@ -1,4 +1,4 @@
-class UsersController < ApplicationController
+class V1::UsersController < ApplicationController
   rescue_from StandardError, with: :render_error_message
   before_action :check_followee, :set_follow, only: [:follow, :unfollow]
 
@@ -17,16 +17,18 @@ class UsersController < ApplicationController
   end
 
   # GET /users/:id/followee_records
-  # TODO: Add pagination
+  # TODO: using jbuilder
   def followee_records
     followee_ids = Follow.where(follower_id: params[:id], status: 'active').map(&:followee_id)
     end_time = Time.now
     start_time = end_time - 7.days
   
     alarms = Alarm
+             .includes(:user)
              .where(user_id: followee_ids, awoke_at: start_time..end_time)
              .order(period_of_sleep: :desc)
              .page(params[:page])
+             []
     render json: { status: 'ok' , data: alarms }
   end
 

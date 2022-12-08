@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UsersController, type: :controller do
+RSpec.describe V1::UsersController, type: :controller do
   let!(:followee_id) { create(:user).id }
   let!(:follower_id) { create(:user).id }
   let(:params) do
