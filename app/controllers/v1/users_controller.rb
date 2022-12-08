@@ -19,17 +19,15 @@ class V1::UsersController < ApplicationController
   # GET /users/:id/followee_records
   # TODO: using jbuilder
   def followee_records
-    followee_ids = Follow.where(follower_id: params[:id], status: 'active').map(&:followee_id)
+    @followee_ids = Follow.where(follower_id: params[:id], status: 'active').map(&:followee_id)
     end_time = Time.now
     start_time = end_time - 7.days
   
-    alarms = Alarm
+    @alarms = Alarm
              .includes(:user)
-             .where(user_id: followee_ids, awoke_at: start_time..end_time)
+             .where(user_id: @followee_ids, awoke_at: start_time..end_time)
              .order(period_of_sleep: :desc)
              .page(params[:page])
-             []
-    render json: { status: 'ok' , data: alarms }
   end
 
   private
