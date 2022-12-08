@@ -3,21 +3,22 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
-  resources :users, only: [] do
-    member do
-      post :follow
-      post :unfollow
-      get :followee_records
+  namespace :v1, defaults: { format: :json } do
+    resources :users, only: [] do
+      member do
+        post :follow
+        post :unfollow
+        get :followee_records
+      end
     end
-  end
 
-  get 'users/:user_id/alarms' => 'alarms#index'
+    get 'users/alarms' => 'alarms#index'
 
-  resources :alarms, only: [:update] do
-    collection do
-      post :clock_in
-      post :clock_out
-      get :sleep_record
+    resources :alarms, only: [:update] do
+      collection do
+        post :clock_in
+        post :clock_out
+      end
     end
   end
 end

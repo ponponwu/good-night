@@ -1,5 +1,5 @@
 
-class AlarmsController < ApplicationController
+class V1::AlarmsController < ApplicationController
   before_action :get_alarms, only: [:index]
 
   # GET /users/alarms
