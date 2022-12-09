@@ -1,5 +1,6 @@
 
 class V1::AlarmsController < ApplicationController
+  rescue_from StandardError, with: :render_error_message
   before_action :get_alarms, only: [:index]
 
   # GET /users/alarms
@@ -31,7 +32,7 @@ class V1::AlarmsController < ApplicationController
     alarm = Alarm.where(user_id: alarm_params[:user_id]).last
     if alarm.awoke_at.nil?
       alarm.update!(awoke_at: awoke_at)
-      head :ok
+      render json: { result: true , data: get_alarms }
     else
       Rails.logger.error 'You already awoke!'
       render json: { result: false }, status: :unprocessable_entity
@@ -42,14 +43,20 @@ class V1::AlarmsController < ApplicationController
 
   def get_alarms
     @user_id = alarm_params[:user_id]
-    @alarms = Alarm.where(user_id: @user_id).order(created_at: :desc).page(params[:page])
+    @alarms = Alarm.includes(:user).where(user_id: @user_id).order(created_at: :desc).page(params[:page]).to_a
   end
 
   def alarm_params
-    params.require(:alarm).permit(
+    @_alarm_params = params.require(:alarm).permit(
       :user_id,
       :slept_at,
       :awoke_at
     ).to_h
+  end
+
+  def render_error_message(ex)
+    logger.debug ex.message
+    logger.debug ex.backtrace.take(5).join("\n")
+    render json: { message: ex.message, result: false }, status: :unprocessable_entity
   end
 end

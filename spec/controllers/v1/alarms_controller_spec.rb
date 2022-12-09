@@ -77,7 +77,7 @@ RSpec.describe V1::AlarmsController, type: :controller do
       end
 
       context 'with incorrect data, none of data to be clock out' do
-        let!(:alarm) { create(:alarm, user_id: user.id, slept_at: Time.now - 8.hour) }
+        let!(:alarm) { create(:alarm, user_id: user.id, slept_at: Time.now - 8.hour, awoke_at: Time.now) }
         it 'should return status 422' do
           res = subject
           expect(response).to have_http_status(422)
