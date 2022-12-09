@@ -18,6 +18,8 @@ RSpec.describe V1::UsersController, type: :controller do
     context 'with valid params' do
       it 'should create a follow' do
         expect { subject }.to change { Follow.count }.by 1
+        expect(JSON.parse(response.body)['data']['follower_id']).to eq(follower_id)
+        expect(JSON.parse(response.body)['data']['followee_id']).to eq(followee_id)
       end
     end
 

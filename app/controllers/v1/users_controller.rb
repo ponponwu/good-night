@@ -5,15 +5,15 @@ class V1::UsersController < ApplicationController
   # POST /users/:id/follow
   def follow
     raise 'Already Follow!' if @follow
-    Follow.create!(follower_id: params[:id], followee_id: user_params[:followee_id])
-    head :ok
+    follow = Follow.create!(follower_id: params[:id], followee_id: user_params[:followee_id])
+    render json: { result: true , data: follow }
   end
 
   # POST /users/:id/unfollow
   def unfollow
     raise ResourceNotFoundError unless @follow
     @follow.update!(status: 'removed')
-    head :ok
+    render json: { result: true , data: @follow }
   end
 
   # GET /users/:id/followee_records
@@ -37,13 +37,12 @@ class V1::UsersController < ApplicationController
   end
 
   def check_followee
-    raise "You Can't Follow Yourself!" if user_params[:followee_id] == params[:id]
-    user = User.find(user_params[:followee_id].to_i)
-    raise ResourceNotFoundError if user.nil?
+    raise "You Can't Follow/Unfollow Yourself!" if user_params[:followee_id] == params[:id]
+    raise ResourceNotFoundError if User.find(user_params[:followee_id].to_i).nil?
   end
 
   def user_params
-    params.require(:user).permit(
+    @_user_params = params.require(:user).permit(
       :followee_id
     ).to_h
   end
