@@ -149,11 +149,26 @@ RSpec.describe 'v1/alarms', type: :request do
           expect(JSON.parse(response.body)['data'].last['awoke_at']).not_to be_nil
         end
       end
+
+      response(422, 'already woke up') do
+        before do
+          create(:alarm, user_id: user.id, slept_at: Time.now - 8.hour, awoke_at: Time.now)
+        end
+        let!(:params) do
+          {
+            alarm: {
+              user_id: user.id,
+              awoke_at: Time.now
+            }
+          }
+        end
+        run_test!
+      end
     end
   end
 
   path '/v1/alarms/{id}' do
-    parameter name: 'id', in: :path, type: :string, description: 'alarm id'
+    parameter name: 'id', in: :path, type: :integer, description: 'alarm id'
     parameter name: :params, in: :body, schema: {
       type: :object,
       properties: {
