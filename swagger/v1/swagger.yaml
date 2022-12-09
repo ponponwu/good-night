@@ -34,19 +34,19 @@ paths:
                   result: true
                   total: 3
                   items:
-                  - id: 412
-                    slept_at: '2022-12-08T06:01:20.864Z'
-                    awoke_at: '2022-12-08T14:01:20.864Z'
+                  - id: 431
+                    slept_at: '2022-12-08T06:46:44.692Z'
+                    awoke_at: '2022-12-08T14:46:44.692Z'
                     period_of_sleep: 28800
                     user_name: GOODNIGHT
-                  - id: 411
-                    slept_at: '2022-12-09T05:01:20.848Z'
-                    awoke_at: '2022-12-09T06:01:20.848Z'
+                  - id: 430
+                    slept_at: '2022-12-09T05:46:44.685Z'
+                    awoke_at: '2022-12-09T06:46:44.685Z'
                     period_of_sleep: 3600
                     user_name: GOODNIGHT
-                  - id: 410
-                    slept_at: '2022-12-09T05:01:20.813Z'
-                    awoke_at: '2022-12-09T06:01:20.813Z'
+                  - id: 429
+                    slept_at: '2022-12-09T05:46:44.663Z'
+                    awoke_at: '2022-12-09T06:46:44.663Z'
                     period_of_sleep: 3600
                     user_name: GOODNIGHT
         '422':
@@ -82,20 +82,20 @@ paths:
               example:
                 result: true
                 data:
-                - id: 417
-                  user_id: 427
-                  slept_at: '2022-12-09T06:01:21.207Z'
+                - id: 436
+                  user_id: 491
+                  slept_at: '2022-12-09T06:46:44.963Z'
                   awoke_at:
                   period_of_sleep:
-                  created_at: '2022-12-09T06:01:21.214Z'
-                  updated_at: '2022-12-09T06:01:21.214Z'
-                - id: 416
-                  user_id: 427
-                  slept_at: '2022-12-08T06:01:21.200Z'
-                  awoke_at: '2022-12-08T14:01:21.200Z'
+                  created_at: '2022-12-09T06:46:44.969Z'
+                  updated_at: '2022-12-09T06:46:44.969Z'
+                - id: 435
+                  user_id: 491
+                  slept_at: '2022-12-08T06:46:44.955Z'
+                  awoke_at: '2022-12-08T14:46:44.955Z'
                   period_of_sleep: 28800
-                  created_at: '2022-12-09T06:01:21.203Z'
-                  updated_at: '2022-12-09T06:01:21.205Z'
+                  created_at: '2022-12-09T06:46:44.957Z'
+                  updated_at: '2022-12-09T06:46:44.960Z'
         '422':
           description: bad request
   "/v1/alarms/clock_out":
@@ -129,13 +129,15 @@ paths:
               example:
                 result: true
                 data:
-                - id: 418
-                  user_id: 429
-                  slept_at: '2022-12-08T22:01:21.252Z'
-                  awoke_at: '2022-12-09T06:01:21.257Z'
+                - id: 437
+                  user_id: 493
+                  slept_at: '2022-12-08T22:46:45.001Z'
+                  awoke_at: '2022-12-09T06:46:45.005Z'
                   period_of_sleep: 28800
-                  created_at: '2022-12-09T06:01:21.254Z'
-                  updated_at: '2022-12-09T06:01:21.266Z'
+                  created_at: '2022-12-09T06:46:45.003Z'
+                  updated_at: '2022-12-09T06:46:45.015Z'
+        '422':
+          description: already woke up
   "/v1/alarms/{id}":
     parameters:
     - name: id
@@ -143,7 +145,7 @@ paths:
       description: alarm id
       required: true
       schema:
-        type: string
+        type: integer
     - name: params
       in: body
       schema:
@@ -176,13 +178,134 @@ paths:
               example:
                 result: true
                 data:
-                  slept_at: '2022-12-08T22:01:21.280Z'
-                  awoke_at: '2022-12-09T06:01:21.285Z'
-                  id: 419
-                  user_id: 430
+                  slept_at: '2022-12-08T22:46:45.038Z'
+                  awoke_at: '2022-12-09T06:46:45.042Z'
+                  id: 439
+                  user_id: 495
                   period_of_sleep: 28800
-                  created_at: '2022-12-09T06:01:21.282Z'
-                  updated_at: '2022-12-09T06:01:21.297Z'
+                  created_at: '2022-12-09T06:46:45.040Z'
+                  updated_at: '2022-12-09T06:46:45.049Z'
+  "/v1/users/{id}/follow":
+    parameters:
+    - name: id
+      in: path
+      description: user id
+      required: true
+      schema:
+        type: integer
+    - name: params
+      in: body
+      schema:
+        type: object
+        properties:
+          user:
+            type: object
+            properties:
+              followee_id:
+                type: integer
+            required:
+            - followee_id
+        required:
+        - user
+    post:
+      summary: follow your friend
+      tags:
+      - Users
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              example:
+                result: true
+                data:
+                  id: 117
+                  follower_id: 497
+                  followee_id: 496
+                  status: active
+                  created_at: '2022-12-09T06:46:45.082Z'
+                  updated_at: '2022-12-09T06:46:45.082Z'
+        '422':
+          description: already follow/ You can't follow your self
+  "/v1/users/{id}/unfollow":
+    parameters:
+    - name: id
+      in: path
+      description: user id
+      required: true
+      schema:
+        type: integer
+    - name: params
+      in: body
+      schema:
+        type: object
+        properties:
+          user:
+            type: object
+            properties:
+              followee_id:
+                type: integer
+            required:
+            - followee_id
+        required:
+        - user
+    post:
+      summary: unfollow user
+      tags:
+      - Users
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              example:
+                result: true
+                data:
+                  status: removed
+                  id: 119
+                  follower_id: 501
+                  followee_id: 500
+                  created_at: '2022-12-09T06:46:45.106Z'
+                  updated_at: '2022-12-09T06:46:45.113Z'
+        '422':
+          description: No record exist
+  "/v1/users/{id}/followee_records":
+    parameters:
+    - name: id
+      in: path
+      description: user id
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: followee_records user
+      tags:
+      - Users
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              example:
+                data:
+                  result: true
+                  total: 3
+                  items:
+                  - id: 442
+                    slept_at: '2022-12-08T06:46:45.154Z'
+                    awoke_at: '2022-12-08T14:46:45.154Z'
+                    period_of_sleep: 28800
+                    user_name: GOODNIGHT
+                  - id: 440
+                    slept_at: '2022-12-09T05:46:45.143Z'
+                    awoke_at: '2022-12-09T06:46:45.143Z'
+                    period_of_sleep: 3600
+                    user_name: GOODNIGHT
+                  - id: 441
+                    slept_at: '2022-12-09T05:46:45.149Z'
+                    awoke_at: '2022-12-09T06:46:45.149Z'
+                    period_of_sleep: 3600
+                    user_name: GOODNIGHT
 servers:
 - url: http://{defaultHost}
   variables:
