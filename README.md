@@ -32,7 +32,7 @@ We want to see all of your development commits
 1. Build Docker
 ```ruby
 docker-compose build
-docker-compose run web rake db:create db:migrate
+docker-compose run web -d rake db:setup db:create db:migrate
 docker-compose up -d
 ```
 2. Api Doc
