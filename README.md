@@ -39,3 +39,6 @@ docker-compose up -d
 ```ruby
 http://localhost:3000/api-docs/index.html
 ```
+3. Basic DB Schema
+
+![DbSchema GUI](/public/1670579125759@2x.jpg "DbSchema")
