@@ -1,7 +1,8 @@
-# README
+Good-Night
 
-# REQUIREMENT
-<!-- We want to know how do you structure the code and design the API
+### REQUIREMENT ###
+```text
+ We want to know how do you structure the code and design the API
 
 ==========================================
 
@@ -23,12 +24,18 @@ You can use any gems you like.
 
 After you finish the project, please send me your GitHub project link.
 
-We want to see all of your development commits -->
+We want to see all of your development commits
+```
 
 
-# USAGE
-# COMMAND: docker-compose build
-# COMMAND: docker-compose run web rake db:create db:migrate
-# COMMAND: docker-compose up -d
-
-# API DOC: http://localhost:3000/api-docs/index.html
+### USAGE ###
+1. Build Docker
+```ruby
+docker-compose build
+docker-compose run web rake db:create db:migrate
+docker-compose up -d
+```
+2. Api Doc
+```ruby
+http://localhost:3000/api-docs/index.html
+```
