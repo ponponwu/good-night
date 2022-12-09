@@ -4,85 +4,185 @@ info:
   title: API V1
   version: v1
 paths:
-  "/v1/users/:user_id/alarms":
-    parameters:
-    - name: user_id
-      in: path
-      description: integer
-      required: true
-      schema:
-        type: integer
+  "/v1/users/alarms":
     get:
       summary: list alarms
       tags:
       - Alarms
+      parameters:
+      - name: params
+        in: query
+        schema:
+          type: object
+          properties:
+            alarm:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+              required:
+              - user_id
+          required:
+          - alarm
       responses:
         '200':
           description: successful
+          content:
+            application/json:
+              example:
+                data:
+                  result: true
+                  total: 3
+                  items:
+                  - id: 412
+                    slept_at: '2022-12-08T06:01:20.864Z'
+                    awoke_at: '2022-12-08T14:01:20.864Z'
+                    period_of_sleep: 28800
+                    user_name: GOODNIGHT
+                  - id: 411
+                    slept_at: '2022-12-09T05:01:20.848Z'
+                    awoke_at: '2022-12-09T06:01:20.848Z'
+                    period_of_sleep: 3600
+                    user_name: GOODNIGHT
+                  - id: 410
+                    slept_at: '2022-12-09T05:01:20.813Z'
+                    awoke_at: '2022-12-09T06:01:20.813Z'
+                    period_of_sleep: 3600
+                    user_name: GOODNIGHT
+        '422':
+          description: params missing
   "/v1/alarms/clock_in":
     parameters:
-    - name: user_id
-      in: path
-      description: '5566'
-      required: true
-      schema:
-        type: string
-    - name: alarm
+    - name: params
       in: body
       schema:
         type: object
         properties:
-          slept_at:
-            type: string
-            format: date-time
+          alarm:
+            type: object
+            properties:
+              user_id:
+                type: integer
+              slept_at:
+                type: string
+                format: date-time
+            required:
+            - user_id
+        required:
+        - alarm
     post:
       summary: clock_in
       tags:
       - Alarms
       responses:
         '200':
-          description: successful
+          description: Alarm created and return list of alarm records
+          content:
+            application/json:
+              example:
+                result: true
+                data:
+                - id: 417
+                  user_id: 427
+                  slept_at: '2022-12-09T06:01:21.207Z'
+                  awoke_at:
+                  period_of_sleep:
+                  created_at: '2022-12-09T06:01:21.214Z'
+                  updated_at: '2022-12-09T06:01:21.214Z'
+                - id: 416
+                  user_id: 427
+                  slept_at: '2022-12-08T06:01:21.200Z'
+                  awoke_at: '2022-12-08T14:01:21.200Z'
+                  period_of_sleep: 28800
+                  created_at: '2022-12-09T06:01:21.203Z'
+                  updated_at: '2022-12-09T06:01:21.205Z'
+        '422':
+          description: bad request
   "/v1/alarms/clock_out":
     parameters:
-    - name: user_id
-      in: path
-      description: '5566'
-      required: true
-      schema:
-        type: string
-    - name: alarm
+    - name: params
       in: body
       schema:
         type: object
         properties:
-          awoke_at:
-            type: string
-            format: date-time
+          alarm:
+            type: object
+            properties:
+              user_id:
+                type: integer
+              awoke_at:
+                type: string
+                format: date-time
+            required:
+            - user_id
+        required:
+        - alarm
     post:
       summary: clock_out
       tags:
       - Alarms
       responses:
         '200':
-          description: successful
+          description: should update alarm record slept and return list of records
+          content:
+            application/json:
+              example:
+                result: true
+                data:
+                - id: 418
+                  user_id: 429
+                  slept_at: '2022-12-08T22:01:21.252Z'
+                  awoke_at: '2022-12-09T06:01:21.257Z'
+                  period_of_sleep: 28800
+                  created_at: '2022-12-09T06:01:21.254Z'
+                  updated_at: '2022-12-09T06:01:21.266Z'
   "/v1/alarms/{id}":
     parameters:
     - name: id
       in: path
-      description: id
+      description: alarm id
       required: true
       schema:
         type: string
-    patch:
-      summary: update alarm
-      responses:
-        '200':
-          description: successful
+    - name: params
+      in: body
+      schema:
+        type: object
+        properties:
+          alarm:
+            type: object
+            properties:
+              user_id:
+                type: integer
+              slept_at:
+                type: string
+                format: date-time
+              awoke_at:
+                type: string
+                format: date-time
+            required:
+            - user_id
+        required:
+        - alarm
     put:
       summary: update alarm
+      tags:
+      - Alarms
       responses:
         '200':
           description: successful
+          content:
+            application/json:
+              example:
+                result: true
+                data:
+                  slept_at: '2022-12-08T22:01:21.280Z'
+                  awoke_at: '2022-12-09T06:01:21.285Z'
+                  id: 419
+                  user_id: 430
+                  period_of_sleep: 28800
+                  created_at: '2022-12-09T06:01:21.282Z'
+                  updated_at: '2022-12-09T06:01:21.297Z'
 servers:
 - url: http://{defaultHost}
   variables:
